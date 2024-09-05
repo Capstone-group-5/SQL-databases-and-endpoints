@@ -17,8 +17,6 @@ var _cors = _interopRequireDefault(require("cors"));
 
 var _bodyParser = _interopRequireDefault(require("body-parser"));
 
-var _promises = require("fs/promises");
-
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -57,39 +55,10 @@ function setupDatabase() {
 
 setupDatabase()["catch"](function (err) {
   console.error("Database migration failed:", err);
-}); // ONLY REMOVE COMMENTS TO EDIT DATABASE STRUCTURE CONSULT BEFORE ATTEMPTING
+}); //GET ALL MACHINES
 
-/* async function runSQLFile(filePath) {
-    const db = await dbPromise;
-    const sql = await readFile(filePath, 'utf8');
-    await db.exec(sql);
-}
-
-
-
-async function initializeDatabase() {
-    try {
-        console.log('Running schema update...');
-        await runSQLFile('./migrations/003-create-task_sheduler.sql'); // Path to your schema update file
-        console.log('Schema updated.');
-
-        console.log('Inserting data...');
-        await runSQLFile('./migrations/004-create-task_sheduler-data.sql'); // Path to your insert data file
-        console.log('Data inserted.');
-    } catch (err) {
-        console.error('Error during database initialization:', err);
-    }
-}
-
-// Call the initialization function when starting the application
-initializeDatabase().catch(err => {
-    console.error('Failed to initialize database:', err);
-});
- */
-//RETRIEVE ALL TASKS 
-
-router.get('/retrieve_tasks/:org', function _callee(req, res) {
-  var org, db, tasks;
+router.get('/retrieve_all_machines/:org', function _callee(req, res) {
+  var org, db, machines;
   return regeneratorRuntime.async(function _callee$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
@@ -102,11 +71,11 @@ router.get('/retrieve_tasks/:org', function _callee(req, res) {
         case 4:
           db = _context2.sent;
           _context2.next = 7;
-          return regeneratorRuntime.awrap(db.all('SELECT * FROM task_sheduler WHERE Organisation = ?', [org]));
+          return regeneratorRuntime.awrap(db.all('SELECT * FROM machinery_inventory WHERE Organisation = ?', [org]));
 
         case 7:
-          tasks = _context2.sent;
-          res.status(200).json(tasks);
+          machines = _context2.sent;
+          res.status(200).json(machines);
           _context2.next = 14;
           break;
 
@@ -123,63 +92,63 @@ router.get('/retrieve_tasks/:org', function _callee(req, res) {
       }
     }
   }, null, null, [[1, 11]]);
-}); //RETRIEVE ONE TASK
+}); //GET ONE MACHINE
 
-router.get('/Retrieve_one_task/:org/:taskName', function _callee2(req, res) {
-  var org, taskName, db, task;
+router.get('/retrieve_one_machine/:org/:regNumber', function _callee2(req, res) {
+  var _req$params, org, regNumber, db, machines;
+
   return regeneratorRuntime.async(function _callee2$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
-          org = req.params.org;
-          taskName = req.params.taskName;
-          _context3.prev = 2;
-          _context3.next = 5;
+          _req$params = req.params, org = _req$params.org, regNumber = _req$params.regNumber;
+          _context3.prev = 1;
+          _context3.next = 4;
           return regeneratorRuntime.awrap(dbPromise);
 
-        case 5:
+        case 4:
           db = _context3.sent;
-          _context3.next = 8;
-          return regeneratorRuntime.awrap(db.get('SELECT * FROM task_sheduler WHERE Organisation = ? AND Task = ?', [org, taskName]));
+          _context3.next = 7;
+          return regeneratorRuntime.awrap(db.get('SELECT * FROM machinery_inventory WHERE Organisation = ? AND reg_number = ? ', [org, regNumber]));
 
-        case 8:
-          task = _context3.sent;
+        case 7:
+          machines = _context3.sent;
 
-          if (task) {
-            res.json(task);
+          if (machines) {
+            res.json(machines);
           } else {
             res.status(404).json({
-              error: 'Could not find task'
+              error: "Could'nt find machine"
             });
           }
 
-          _context3.next = 15;
+          _context3.next = 14;
           break;
 
-        case 12:
-          _context3.prev = 12;
-          _context3.t0 = _context3["catch"](2);
+        case 11:
+          _context3.prev = 11;
+          _context3.t0 = _context3["catch"](1);
           res.status(500).json({
             error: _context3.t0.message
           });
 
-        case 15:
+        case 14:
         case "end":
           return _context3.stop();
       }
     }
-  }, null, null, [[2, 12]]);
-}); //ADD A TASK
+  }, null, null, [[1, 11]]);
+}); //ADD A NEW MACHINE
 
-router.post('/add_new_task/:org', function _callee3(req, res) {
-  var _req$body, Organisation, Task, Assigner, Assignee, Status, Description, Dead_line, org, db, existingTask, result;
+router.post('/Add_machine/:org/:regNumber', function _callee3(req, res) {
+  var _req$params2, org, regNumber, _req$body, Organisation, Machinery, reg_number, Condition, Issue, db, existingMachine;
 
   return regeneratorRuntime.async(function _callee3$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
-          _req$body = req.body, Organisation = _req$body.Organisation, Task = _req$body.Task, Assigner = _req$body.Assigner, Assignee = _req$body.Assignee, Status = _req$body.Status, Description = _req$body.Description, Dead_line = _req$body.Dead_line;
-          org = req.params.org;
+          _req$params2 = req.params, org = _req$params2.org, regNumber = _req$params2.regNumber;
+          _req$body = req.body, Organisation = _req$body.Organisation, Machinery = _req$body.Machinery, reg_number = _req$body.reg_number, Condition = _req$body.Condition, Issue = _req$body.Issue;
           _context4.prev = 2;
           _context4.next = 5;
           return regeneratorRuntime.awrap(dbPromise);
@@ -187,19 +156,19 @@ router.post('/add_new_task/:org', function _callee3(req, res) {
         case 5:
           db = _context4.sent;
           _context4.next = 8;
-          return regeneratorRuntime.awrap(db.get('SELECT * FROM task_sheduler WHERE Organisation = ? AND Task = ?', [org, Task]));
+          return regeneratorRuntime.awrap(db.get('SELECT * FROM machinery_inventory WHERE Organisation = ? AND reg_number = ?', [org, regNumber]));
 
         case 8:
-          existingTask = _context4.sent;
+          existingMachine = _context4.sent;
 
-          if (existingTask) {
+          if (existingMachine) {
             res.status(404).json({
-              error: 'Task name already exists!'
+              error: 'Machine registration already exists!'
             });
           } else {
-            result = db.run('INSERT INTO task_sheduler (Organisation, Task, Assigner, Assignee, Status, Description, Dead_line) VALUES (?, ?, ?, ?, ?, ?,?)', [Organisation, Task, Assigner, Assignee, Status, Description, Dead_line]);
+            db.run('INSERT INTO machinery_inventory (Organisation, Machinery, reg_number, Condition, Issue) VALUES (?, ?, ?, ?, ?)', [Organisation, Machinery, reg_number, Condition, Issue]);
             res.status(200).json({
-              message: 'Task successfully added'
+              message: 'Machine successfully added'
             });
           }
 
@@ -219,17 +188,17 @@ router.post('/add_new_task/:org', function _callee3(req, res) {
       }
     }
   }, null, null, [[2, 12]]);
-}); // EDIT A TASK
+}); //EDIT A MACHINE
 
-router.put('/Update_task/:org/:selectedTask', function _callee4(req, res) {
-  var _req$params, org, selectedTask, _req$body2, Task, Assigner, Assignee, Status, Description, Dead_line, db, existingTask, result;
+router.put('/Update_machine/:org/:regNumber', function _callee4(req, res) {
+  var _req$params3, org, regNumber, _req$body2, Machinery, reg_number, Condition, Issue, db, result;
 
   return regeneratorRuntime.async(function _callee4$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
-          _req$params = req.params, org = _req$params.org, selectedTask = _req$params.selectedTask;
-          _req$body2 = req.body, Task = _req$body2.Task, Assigner = _req$body2.Assigner, Assignee = _req$body2.Assignee, Status = _req$body2.Status, Description = _req$body2.Description, Dead_line = _req$body2.Dead_line;
+          _req$params3 = req.params, org = _req$params3.org, regNumber = _req$params3.regNumber;
+          _req$body2 = req.body, Machinery = _req$body2.Machinery, reg_number = _req$body2.reg_number, Condition = _req$body2.Condition, Issue = _req$body2.Issue;
           _context5.prev = 2;
           _context5.next = 5;
           return regeneratorRuntime.awrap(dbPromise);
@@ -237,62 +206,47 @@ router.put('/Update_task/:org/:selectedTask', function _callee4(req, res) {
         case 5:
           db = _context5.sent;
           _context5.next = 8;
-          return regeneratorRuntime.awrap(db.get('SELECT * FROM task_sheduler WHERE Organisation = ? AND Task = ?', [org, Task]));
+          return regeneratorRuntime.awrap(db.run('UPDATE machinery_inventory SET  Machinery = ?, reg_number = ?, Condition = ?, Issue = ? WHERE Organisation = ? AND reg_number = ?', [Machinery, reg_number, Condition, Issue, org, regNumber]));
 
         case 8:
-          existingTask = _context5.sent;
-
-          if (!(existingTask && existingTask.Task !== selectedTask)) {
-            _context5.next = 11;
-            break;
-          }
-
-          return _context5.abrupt("return", res.status(400).json({
-            error: 'Task name already exists'
-          }));
-
-        case 11:
-          _context5.next = 13;
-          return regeneratorRuntime.awrap(db.run('UPDATE task_sheduler SET Task = ?, Assigner = ?, Assignee = ?, Status = ?, Description = ?, Dead_line = ? WHERE Organisation = ? AND Task = ?', [Task, Assigner, Assignee, Status, Description, Dead_line, org, selectedTask]));
-
-        case 13:
           result = _context5.sent;
 
           if (result.changes > 0) {
             res.json({
-              message: 'Task successfully updated'
+              message: 'Machine successfully updated'
             });
           } else {
             res.status(404).json({
-              error: 'Unable to update task'
+              error: 'Unable to update machine'
             });
           }
 
-          _context5.next = 20;
+          _context5.next = 15;
           break;
 
-        case 17:
-          _context5.prev = 17;
+        case 12:
+          _context5.prev = 12;
           _context5.t0 = _context5["catch"](2);
           res.status(500).json({
             error: _context5.t0.message
           });
 
-        case 20:
+        case 15:
         case "end":
           return _context5.stop();
       }
     }
-  }, null, null, [[2, 17]]);
-});
-router["delete"]('/Delete_task/:org/:selectedTask', function _callee5(req, res) {
-  var _req$params2, org, selectedTask, db, result;
+  }, null, null, [[2, 12]]);
+}); //DELETE A MACHINE
+
+router["delete"]('/Delete_machine/:org/:regNumber', function _callee5(req, res) {
+  var _req$params4, org, regNumber, db, result;
 
   return regeneratorRuntime.async(function _callee5$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
-          _req$params2 = req.params, org = _req$params2.org, selectedTask = _req$params2.selectedTask;
+          _req$params4 = req.params, org = _req$params4.org, regNumber = _req$params4.regNumber;
           _context6.prev = 1;
           _context6.next = 4;
           return regeneratorRuntime.awrap(dbPromise);
@@ -300,18 +254,18 @@ router["delete"]('/Delete_task/:org/:selectedTask', function _callee5(req, res) 
         case 4:
           db = _context6.sent;
           _context6.next = 7;
-          return regeneratorRuntime.awrap(db.run('DELETE FROM task_sheduler WHERE Organisation = ? AND Task = ?', [org, selectedTask]));
+          return regeneratorRuntime.awrap(db.run('DELETE FROM machinery_inventory WHERE Organisation = ? AND reg_number = ?', [org, regNumber]));
 
         case 7:
           result = _context6.sent;
 
           if (result.changes > 0) {
             res.json({
-              message: 'Account deleted'
+              message: 'Machine deleted'
             });
           } else {
             res.status(404).json({
-              error: 'Failed to delete account'
+              error: 'Failed to delete machine'
             });
           }
 

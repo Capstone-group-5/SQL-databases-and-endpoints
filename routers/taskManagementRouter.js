@@ -54,10 +54,11 @@ initializeDatabase().catch(err => {
 
 
 //RETRIEVE ALL TASKS 
-router.get('/retrieve_tasks', async (req, res) => {
+router.get('/retrieve_tasks/:org', async (req, res) => {
+    const {org} = req.params;
     try {
         const db = await dbPromise;
-        const tasks = await db.all('SELECT * FROM task_sheduler')
+        const tasks = await db.all('SELECT * FROM task_sheduler WHERE Organisation = ?', [org])
         res.status(200).json(tasks);
     } catch (err) {
         res.status(500).json({ error: err.message })
