@@ -13,7 +13,7 @@ app.use(cors());
 app.use(express.static('public'));
 
 
-app.use('/profie/', userProfileRoutes);
+app.use('/profile/', userProfileRoutes);
 
 const PORT = process.env.PORT || 5565;
 app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
