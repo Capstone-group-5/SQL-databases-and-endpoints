@@ -1,0 +1,3 @@
+insert into user_profile (Organisation, UserName, Surname, E_mail, User_Password, User_Role) values ('GrapeVine1', "Johan", "Van Nieker", "JohanVanN@example.com", "Johan123", "Admin");
+insert into user_profile (Organisation, UserName, Surname, E_mail, User_Password, User_Role) values ('GrapeVine1', "Mabena", "Modise", "MabenaM10@example.com", "Mabena123", "Employee");
+insert into user_profile (Organisation, UserName, Surname, E_mail, User_Password, User_Role) values ('CitrusValley', "Kobus", "Steenkamp", "KSkamp@example.com", "Kobus123", "Admin");

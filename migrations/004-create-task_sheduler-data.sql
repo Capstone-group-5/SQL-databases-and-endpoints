@@ -1,0 +1,3 @@
+insert into task_sheduler (Organisation, Task, Assigner, Assignee, Status, Dead_line) values ('GrapeVine1', "Watering section6", "Johan", "Mabena", "in-progress", "2024-09-05T12:30");
+insert into task_sheduler (Organisation, Task, Assigner, Assignee, Status, Dead_line) values ('GrapeVine1', "Cleaning garbage disposal", "Johan", "Mabena", "Complete", "2024-09-05T12:30");
+insert into task_sheduler (Organisation, Task, Assigner, Assignee, Status, Dead_line) values ('CitrusValley', "Harvesting section 1", "Kobus", "Kobus", "Complete", "2024-09-05T12:30");
