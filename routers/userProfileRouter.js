@@ -22,10 +22,11 @@ setupDatabase().catch(err => {
 });
 
 // GET ALL USER PROFILES
-router.get('/get_all_profiles', async (req, res) => {
+router.get('/get_all_profiles/:org', async (req, res) => {
+    const {org} = req.params;
     try {
         const db = await dbPromise;
-        const profiles = await db.all('SELECT * FROM user_profile')
+        const profiles = await db.all('SELECT * FROM user_profile WHERE Organisation = ?', [org])
         res.status(200).json(profiles);
     } catch (err) {
         res.status(500).json({ error: err.message })
@@ -101,10 +102,11 @@ router.put('/Update/user_profile/:eMail', async (req, res) => {
 //DELETE A PROFILE
 router.delete('/Delete/user_profile/:id', async (req, res) => {
     const { id } = req.params;
+    
     try{
         const db = await dbPromise;
         const result = await db.run(
-            'DELETE FROM user_profile WHERE id = ?', [id]
+            'DELETE FROM user_profile WHERE id = ? && Organisation = ?', [id] 
         );
 
         if (result.changes > 0){

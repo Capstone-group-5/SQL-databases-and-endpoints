@@ -4,6 +4,7 @@ import sqlite3 from 'sqlite3';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import userProfileRoutes from './routers/userProfileRouter.js'
+import taskManagementRoutes from './routers/taskManagementRouter.js'
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -14,6 +15,8 @@ app.use(express.static('public'));
 
 
 app.use('/profile/', userProfileRoutes);
+app.use('/tasks/', taskManagementRoutes);
+
 
 const PORT = process.env.PORT || 5565;
 app.listen(PORT, () => console.log(`Server is running on PORT ${PORT}`));
