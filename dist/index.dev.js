@@ -18,6 +18,8 @@ var _taskManagementRouter = _interopRequireDefault(require("./routers/taskManage
 
 var _machineManagementRouter = _interopRequireDefault(require("./routers/machineManagementRouter.js"));
 
+var _cropInventoryRouter = _interopRequireDefault(require("./routers/cropInventoryRouter.js"));
+
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function _getRequireWildcardCache() { return cache; }; return cache; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") { return { "default": obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj["default"] = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
@@ -35,6 +37,7 @@ app.use(_express["default"]["static"]('public'));
 app.use('/profile/', _userProfileRouter["default"]);
 app.use('/tasks/', _taskManagementRouter["default"]);
 app.use('/machines/', _machineManagementRouter["default"]);
+app.use('/crops/', _cropInventoryRouter["default"]);
 var PORT = process.env.PORT || 5565;
 app.listen(PORT, function () {
   return console.log("Server is running on PORT ".concat(PORT));
