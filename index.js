@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 import userProfileRoutes from './routers/userProfileRouter.js';
 import taskManagementRoutes from './routers/taskManagementRouter.js';
 import machineryRoutes from './routers/machineManagementRouter.js';
-import cropRoutes from './routers/cropInventoryRouter.js'
+import cropRoutes from './routers/cropInventoryRouter.js';
+import analysisRoutes from './routers/analysisRecordRouter.js'
 
 const app = express();
 app.use(express.urlencoded({ extended: false }));
@@ -20,6 +21,7 @@ app.use('/profile/', userProfileRoutes);
 app.use('/tasks/', taskManagementRoutes);
 app.use('/machines/', machineryRoutes);
 app.use('/crops/', cropRoutes);
+app.use('/analysis/', analysisRoutes);
 
 
 const PORT = process.env.PORT || 5565;
